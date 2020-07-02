@@ -2,13 +2,16 @@
 <div class ='chat'>
   <div class="chat-wrapper">
     <div class='chat-box'>
-        <div class ='msg msg-left' v-for='(msg,index) in msgs' v-bind:key='index'>
-            {{msg}}
+        <div class = 'msg alert'>
+          {{alert}}
+          </div>
+        <div class ='msg' :class = 'binder(msg)' v-for='(msg,index) in msgs' v-bind:key='index'>
+            {{msg.message}}
         </div>
     </div>
     <div class = 'interactive-area'>
-        <input type='text' placeholder='place here' class = 'type-area' v-model='a' >
-        <button class='send' @click='push' >send </button>
+        <input type='text' placeholder='place here' class = 'type-area' v-model='temp'>
+        <button class='send' @click='send'>send </button>
     </div>
   </div>
 </div>
@@ -16,24 +19,46 @@
 </template>
 
 <script>
+
 export default {
     name:'Chat',
+    props:['socket'],
     data(){
         return {
-            a :null,
-            msgs :[]
+            msgs :[],
+            alert :null,
+            temp: ''
         }
     },
     methods:{
-        push(){
-            if(this.a !=null){
-                this.msgs.push(this.a)
-            }
-            this.a = null;
-            console.log(this.msgs)
+        send(e){
+          e.preventDefault()
+          if (this.temp!=''){
+            this.socket.emit('msg',this.temp)
+            this.msgs.push({self:true,message:this.temp})
+            this.temp = ''
+          }
+        },
+        binder(msg){
 
+          if(msg.self == true){
+            return 'msg-left'
+          }
+          else{
+            return 'msg-right'
+            
+          }
 
         }
+    },
+    mounted(){
+      this.socket.on('chat-success',(msg)=>{
+        this.alert = msg;
+      })
+      this.socket.on('msg',(msg)=>{
+        this.msgs.push({self:'false',message:msg})
+      })
+      
     }
 
 }
@@ -93,8 +118,10 @@ export default {
 }
 
 .msg {
-  margin: 8px 0;
-  border-bottom: 1px solid black;
+  margin: 8px 0px;
+}
+.alert{
+  align-self:center;
 }
 
 .msg-left {
