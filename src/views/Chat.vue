@@ -1,18 +1,18 @@
 <template>
 <div class ='chat'>
+  <div class="chat-wrapper">
     <div class='chat-box'>
-        <div class ='text' v-for='i in msgs' v-bind:key=i>
-            <div class="msg">{{i}}</div>
-            
-            
+        <div class ='msg msg-left' v-for='(msg,index) in msgs' v-bind:key='index'>
+            {{msg}}
         </div>
     </div>
     <div class = 'interactive-area'>
         <input type='text' placeholder='place here' class = 'type-area' v-model='a' >
         <button class='send' @click='push' >send </button>
     </div>
+  </div>
 </div>
-    
+
 </template>
 
 <script>
@@ -31,71 +31,78 @@ export default {
             }
             this.a = null;
             console.log(this.msgs)
-            
+
 
         }
     }
-    
+
 }
 </script>
 
 <style scoped>
+
+.chat {
+  display: flex;
+  flex-direction:column;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-wrapper {
+  width:500px;
+  height:650px;
+}
+
 .chat-box{
-    margin-top:5vh;
-    margin-left:auto;
-    margin-right:auto;
-    width:500px;
-    height:650px;
-    border:5px solid black;
-    border-collapse: collapse;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    padding:0rem 2rem;
-    text-align:left;
-    overflow-y: scroll;
-}
-.interactive-area{
-    width:100%;
-    height:50px;
-    top:580px;
-    border-radius:15px;
-    border-collapse:collapse;
-    bottom:0;
-    position:sticky;
-    
-
-    
-}
-.type-area{
-    border-radius:15px;
-    border:3px solid black;
-    outline:none;
-    height:100%;
-
-}
-.send{
-    position:absolute;
-    top:20px;
-    padding:5px;
-}
-.type-area:focus{
-    width:500px;
-}
-.text{
+    width: 100%;
+    height: 100%;
+    border:2px solid black;
+    padding: 1rem;
+    overflow-y: auto;
     display:flex;
-    flex-direction: column; align-items: flex-start; justify-content: flex-end;
-    height:100%;
-    min-height:100%;
-
-
+    flex-direction: column-reverse;
 }
-.text:nth-child(even)
-{
-    justify-self:flex-start;
 
+.interactive-area {
+  position: sticky;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.type-area{
+    border:2px solid black;
+    outline:none;
+    width: 100%;
+    padding: 12px 24px;
+}
+
+.send{
+  background: none;
+    padding: 12px 24px;
+    color: white;
+    background-color: black;
+    cursor: pointer;
+    transition: all 0.4s ease-in-out;
+}
+
+.send:hover {
+  background-color: white;
+  color: black;
+}
+
+.msg {
+  margin: 8px 0;
+  border-bottom: 1px solid black;
+}
+
+.msg-left {
+  align-self: flex-start;
+}
+
+.msg-right {
+  align-self: flex-end;
 }
 
 
