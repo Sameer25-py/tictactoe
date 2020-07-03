@@ -25,18 +25,29 @@
             </div>
         </div>
         </div>
-    <div class = 'turn'> 
-        {{turn_msg}}
+
+    <div class = 'turn' v-if ="waiting">
+        waiting for Opponent
+    </div>
+
+    <div class = 'turn' v-if="turn && !waiting"> 
+        Your Turn
         </div>
+
+    <div class = 'turn' v-else-if="!turn && !waiting">
+        Opponent Turn
+    </div>
+
     <div id = 'app'>
         <div class = 'gameboard'>
             <table class = 'table'>
-                <tr v-bind:key=i v-for='(i,index) in rows'>
-                    <td v-bind:key=j v-for='(j,jndex) in columns' @click="clicked(index,jndex,$event)"></td>
+                <tr v-bind:key=index v-for='(i,index) in board'>
+                    <td v-bind:key=jndex v-for='(j,jndex) in i' @click="clicked(index,jndex)"> {{j}}</td>
                 </tr>
             </table>
         </div>
     </div>
+    
     <div class = 'chat'>
         <Chat :socket=socket />
     </div>
@@ -54,7 +65,7 @@ export default {
     },
     data(){
         return{
-            socket : io('http://192.168.0.101:9000'),
+            socket : io.connect('http://localhost:9000/player'),
             oval : `<svg id="Capa_1" height="100pt" viewBox="0 0 515.556 515.556" width="100pt" xmlns="http://www.w3.org/2000/svg"><path d="m257.778 515.556c-142.137 0-257.778-115.642-257.778-257.778s115.641-257.778 257.778-257.778 257.778 115.641 257.778 257.778-115.642 257.778-257.778 257.778zm0-451.112c-106.61 0-193.333 86.723-193.333 193.333s86.723 193.333 193.333 193.333 193.333-86.723 193.333-193.333-86.723-193.333-193.333-193.333z"/></svg>`,
             cross: `<svg height="120pt" viewBox="0 0 365.71733 365" width="120pt" xmlns="http://www.w3.org/2000/svg"><g fill="#f44336"><path d="m356.339844 296.347656-286.613282-286.613281c-12.5-12.5-32.765624-12.5-45.246093 0l-15.105469 15.082031c-12.5 12.503906-12.5 32.769532 0 45.25l286.613281 286.613282c12.503907 12.5 32.769531 12.5 45.25 0l15.082031-15.082032c12.523438-12.480468 12.523438-32.75.019532-45.25zm0 0"/><path d="m295.988281 9.734375-286.613281 286.613281c-12.5 12.5-12.5 32.769532 0 45.25l15.082031 15.082032c12.503907 12.5 32.769531 12.5 45.25 0l286.632813-286.59375c12.503906-12.5 12.503906-32.765626 0-45.246094l-15.082032-15.082032c-12.5-12.523437-32.765624-12.523437-45.269531-.023437zm0 0"/></g></svg>`,
             board: [],
@@ -62,19 +73,21 @@ export default {
             columns : 3,
             turn : false,
             winner: null,
-            sign:'',
-            turn_msg:''
+            icon:'',
+            turn_msg:'',
+            waiting:true,
+            spectator :false,
+            
         }
     },
     methods:{
-        clicked(x,y,e){
-            console.log(this.turn)
-            if(this.turn == true){
-                if(this.board[x][y] === '')
+        clicked(x,y){
+            
+            if(this.turn == true && !this.waiting){
+                if(this.board[x][y] == '')
                 {
-                    this.board[x][y] = this.sign
-                    this.socket.emit('turn',{x:x,y:y})
-                    e.target.innerHTML = this.board[x][y]
+                    this.board[x][y] = this.icon
+                    this.socket.emit('index',this.board)
                     //this.check(x,y)
                     this.turn_changer()
                 }
@@ -92,24 +105,34 @@ export default {
                 ['','',''],
                 ['','','']
             ]
-        this.socket.emit('start')
-        this.socket.on('start',turn=>{
-            console.log(turn)
-            if (turn == true){
-                this.sign = 'o'
-                this.turn_msg='ur turn'
-            }
-            else{
-                this.sign='x',
-                this.turn_msg='their turn'
-            }
-        })
-        }
-    },
+    }
+},
     mounted(){
         this.board_initialize();
-    }
+
+        this.socket.on('hello',msg=>{
+            console.log(msg)
+        })
+
+        this.socket.on('initialize',icon=>{
+            this.icon = icon
+        })
+
+        this.socket.on('start',obj=>{
+            this.turn  = obj.turn
+            this.waiting = false
+            this.board = obj.board
+        })
+        this.socket.on('index',board=>{
+                this.board = board
+                this.turn  = true    
+        })
+
+        this.socket.on('discon', ()=>{
+            this.waiting = true
+        })
     
+    }
 }
 </script>
 

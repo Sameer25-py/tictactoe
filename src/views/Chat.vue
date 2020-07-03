@@ -11,7 +11,7 @@
     </div>
     <div class = 'interactive-area'>
         <input type='text' placeholder='place here' class = 'type-area' v-model='temp'>
-        <button class='send' @click='send'>send </button>
+        <button class='send'  @keyup.enter='send' @click='send'>send </button>
     </div>
   </div>
 </div>
@@ -49,6 +49,13 @@ export default {
             
           }
 
+        },
+        check(e){
+          if(e.keyCode == 13)
+          {
+            this.send(e)
+          }
+
         }
     },
     mounted(){
@@ -59,6 +66,9 @@ export default {
         this.msgs.push({self:'false',message:msg})
       })
       
+    },
+    created(){
+      window.addEventListener('keyup', this.check)
     }
 
 }

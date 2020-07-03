@@ -3,9 +3,11 @@ import VueRouter from 'vue-router'
 import Game from  '../views/Game.vue'
 import Chat from '../views/Chat.vue'
 
+
 Vue.use(VueRouter)
 
   const routes = [
+  
   {
     path: '/',
     name: 'Game',
