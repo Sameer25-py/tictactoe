@@ -1,23 +1,32 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/"> Lobby </router-link> |
-      <router-link to="/Game">Game</router-link> |
-      <router-link to="/about">About</router-link> |
-      <router-link to='/chat'> Chat </router-link> 
+      <router-link to="/">Lobby</router-link>|
+      <router-link to="/Game">Game</router-link>|
+      <router-link to="/about">About</router-link>|
+      <router-link to="/chat">Chat</router-link>
     </div>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap");
+html,
+body {
+  margin: 0;
+}
+
+body {
+  background-color: #fafafa;
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Merriweather";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  
 }
 
 #nav {
