@@ -110,8 +110,9 @@ export default {
     mounted(){
         this.board_initialize();
 
-        this.socket.on('hello',msg=>{
-            console.log(msg)
+        this.socket.on('hello',obj=>{
+            console.log(obj.msg)
+            this.board = obj.board
         })
 
         this.socket.on('initialize',icon=>{
