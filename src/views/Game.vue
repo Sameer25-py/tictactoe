@@ -72,7 +72,7 @@ export default {
             rows : 3,
             columns : 3,
             turn : false,
-            winner: null,
+            winner: false,
             icon:'',
             turn_msg:'',
             waiting:true,
@@ -88,12 +88,65 @@ export default {
                 {
                     this.board[x][y] = this.icon
                     this.socket.emit('index',this.board)
-                    //this.check(x,y)
+                    this.check(x,y)
                     this.turn_changer()
                 }
             }
                 
         },
+        check(x,y){
+            //horizontal checks
+            if (y < 1 && this.board[x][y + 1]== this.icon && this.board[x][y+2] == this.icon){
+                //first block of the row
+                    this.winner = true
+                    console.log('u win')
+                }
+            else if (y > 1 && this.board[x][y-1] == this.icon && this.board[x][y-2] == this.icon){
+                //last block of the row
+                this.winner = true
+                console.log('u win')
+
+            }
+            else if (y == 1 && this.board[x][y+1] == this.icon && this.board[x][y-1] == this.icon){
+                //middle block
+                this.winner = true
+                console.log('u win')
+            }
+            //vertical checks
+            if (x < 1 && this.board[x+1][y]== this.icon && this.board[x+2][y] == this.icon){
+                //first block of the column
+                    this.winner = true
+                    console.log('u win')
+                }
+            else if (x > 1 && this.board[x-1][y] == this.icon && this.board[x-2][y] == this.icon){
+                //last block of the column
+                this.winner = true
+                console.log('u win')
+
+            }
+            else if (x == 1 && this.board[x+1][y] == this.icon && this.board[x-1][y] == this.icon){
+                //middle block
+                this.winner = true
+                console.log('u win')
+            }
+            //diagonal checks
+            else if ((x==0 && y==0) || (x==1 && y==1) || (x==2 && y==2) || (x==0 && y==2) || (x==1 && y==1) || (x==2 && y==0)){
+            
+            if(this.board[0][0] == this.icon && this.board[1][1] == this.icon && this.board[2][2] == this.icon){
+                //diagonal right
+                 console.log('jere')
+                this.winner = true
+                console.log('u win')
+            }
+            else if(this.board[0][2] == this.icon && this.board[1][1] == this.icon && this.board[2][0] == this.icon){
+                console.log('here')
+                this.winner = true
+                console.log('u win')
+            }
+           
+            }
+
+    },
 
         turn_changer(){
             
